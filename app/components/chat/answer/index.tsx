@@ -126,7 +126,7 @@ const Answer: FC<IAnswerProps> = ({
     );
 
     setQuotes(uniqueQuotes);
-  }, [retriever_resources, workflowProcess]);
+  }, [retriever_resources, workflowProcess, item, id]);
 
 
   // const quotes = [...new Set(workflowProcess?.tracing?.[1]?.outputs?.result.map((item: any) => item.title) ?? [])];
