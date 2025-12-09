@@ -16,6 +16,7 @@ import LoadingAnim from '../loading-anim'
 import s from '../style.module.css'
 import Thought from '../thought'
 import TJHSLogo from '../../../images/tjhs.png'
+import PdfLogo from '../../../images/PDF.svg'
 
 function OperationBtn({ innerContent, onClick, className }: { innerContent: React.ReactNode, onClick?: () => void, className?: string }) {
   return (
@@ -82,7 +83,42 @@ const Answer: FC<IAnswerProps> = ({
   allToolIcons,
   suggestionClick = () => { },
 }) => {
-  const { id, content, feedback, agent_thoughts, workflowProcess, suggestedQuestions = [] } = item
+  const { id, content, feedback, agent_thoughts, workflowProcess, suggestedQuestions = [], retriever_resources } = item
+  console.log("retriever_resources", retriever_resources);
+  console.log("workflowProcess", workflowProcess);
+  const [quotes, setQuotes] = React.useState<any>([]);
+  const [popup, setPopup] = React.useState(null); // { pdf: {}, rect: DOMRect }
+
+  const handleClick = (quote, e) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    setPopup({ quote, rect });
+  };
+
+  React.useEffect(() => {
+    let newQuotes: any[] = [];
+
+    if (retriever_resources && retriever_resources.length > 0) {
+      newQuotes = retriever_resources.map((res: any) => ({
+        name: res.document_name,
+        content: res.content
+      }));
+    } else if (workflowProcess?.tracing) {
+      newQuotes = workflowProcess.tracing?.[1]?.outputs?.result?.map((res: any) => ({
+        name: res.title,
+        content: res.content
+      })) ?? [];
+    }
+
+    // 按 name 去重
+    const uniqueQuotes = Array.from(
+      new Map(newQuotes.map(q => [q.name, q])).values()
+    );
+
+    setQuotes(uniqueQuotes);
+  }, [retriever_resources, workflowProcess]);
+
+  // const quotes = [...new Set(workflowProcess?.tracing?.[1]?.outputs?.result.map((item: any) => item.title) ?? [])];
+
   const isAgentMode = !!agent_thoughts && agent_thoughts.length > 0
 
   const { t } = useTranslation()
@@ -206,6 +242,65 @@ const Answer: FC<IAnswerProps> = ({
                   : (
                     <StreamdownMarkdown content={content} />
                   ))}
+              {quotes.length > 0 && !isResponding && (
+                <div className="mt-3">
+                  {/* 标题 + 分割线（同一行） */}
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="text-gray-700 font-medium whitespace-nowrap">引用</span>
+                    <div className="flex-1 border-t border-gray-300"></div>
+                  </div>
+
+                  {/* PDF 引用列表 */}
+                  <div className="flex flex-wrap gap-2">
+                    {quotes.map((quote, index) => (
+                      <div
+                        key={index}
+                        onClick={(e) => handleClick(quote, e)}
+                        className="
+                            flex items-center gap-1 
+                            p-1.5 
+                            bg-gray-200         /* 深一点的背景色 */
+                            rounded 
+                            border border-gray-300 
+                            hover:bg-gray-300   /* hover 时更深 */
+                            cursor-pointer 
+                            max-w-[40%] 
+                            flex-1
+                          "
+                      >
+                        <img src={PdfLogo.src} className="w-5 h-5" alt="pdf icon" />
+                        <span className="text-[12px] text-gray-900 truncate">{quote.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                  {/* 贴在点击的 PDF 上方的弹窗 */}
+                  {popup && (
+                    <>
+                      {/* 点击空白关闭 */}
+                      <div
+                        className="fixed inset-0 bg-transparent z-40"
+                        onClick={() => setPopup(null)}
+                      />
+
+                      <div
+                        className="fixed z-50 bg-white shadow-lg p-3 rounded w-80 bg-white/60 backdrop-blur-md"
+                        style={{
+                          left: popup.rect.left + popup.rect.width / 2,
+                          top: popup.rect.top - 6, // 贴在 PDF 上方 6px
+                          transform: "translate(-50%, -100%)",
+                        }}
+                      >
+                        <div className="font-semibold text-sm mb-1">
+                          {popup.quote.name}
+                        </div>
+                        <div className="text-xs text-gray-800 whitespace-pre-wrap">
+                          {popup.quote.content.replace(/\r?\n/g, " ")}
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
               {suggestedQuestions.length > 0 && (
                 <div className="mt-3">
                   <div className="flex gap-1 mt-1 flex-wrap">

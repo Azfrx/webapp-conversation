@@ -88,6 +88,7 @@ export interface IChatItem {
   log?: { role: string, text: string }[]
   agent_thoughts?: ThoughtItem[]
   message_files?: VisionFile[]
+  retriever_resources?: any[]
 }
 
 export type ChatItem = IChatItem & {

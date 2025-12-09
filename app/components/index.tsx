@@ -146,6 +146,7 @@ const Main: FC<IMainProps> = () => {
             feedback: item.feedback,
             isAnswer: true,
             message_files: item.message_files?.filter((file: any) => file.belongs_to === 'assistant') || [],
+            retriever_resources: item.retriever_resources,
           })
         })
         setChatList(newChatList)
@@ -523,6 +524,7 @@ const Main: FC<IMainProps> = () => {
         })
       },
       onMessageEnd: (messageEnd) => {
+        console.log("messageEndmessageEnd", messageEnd);
         if (messageEnd.metadata?.annotation_reply) {
           responseItem.id = messageEnd.id
           responseItem.annotation = ({
@@ -552,6 +554,7 @@ const Main: FC<IMainProps> = () => {
             draft.push({ ...responseItem })
           },
         )
+        console.log("newListWithAnswer", newListWithAnswer);
         setChatList(newListWithAnswer)
       },
       onMessageReplace: (messageReplace) => {
