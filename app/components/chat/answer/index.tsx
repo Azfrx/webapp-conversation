@@ -84,8 +84,8 @@ const Answer: FC<IAnswerProps> = ({
   suggestionClick = () => { },
 }) => {
   const { id, content, feedback, agent_thoughts, workflowProcess, suggestedQuestions = [], retriever_resources } = item
-  console.log("retriever_resources", retriever_resources);
-  console.log("workflowProcess", workflowProcess);
+  // console.log("retriever_resources", retriever_resources);
+  // console.log("workflowProcess", workflowProcess);
   const [quotes, setQuotes] = React.useState<any>([]);
   const [popup, setPopup] = React.useState(null); // { pdf: {}, rect: DOMRect }
 
@@ -97,25 +97,37 @@ const Answer: FC<IAnswerProps> = ({
   React.useEffect(() => {
     let newQuotes: any[] = [];
 
+    // -------------------------------
+    // 1. retriever_resources 优先
+    // -------------------------------
     if (retriever_resources && retriever_resources.length > 0) {
       newQuotes = retriever_resources.map((res: any) => ({
         name: res.document_name,
         content: res.content
       }));
-    } else if (workflowProcess?.tracing) {
-      newQuotes = workflowProcess.tracing?.[1]?.outputs?.result?.map((res: any) => ({
+    }
+    // -------------------------------
+    // 2. 明确只取 tracing[1]
+    // -------------------------------
+    else if (workflowProcess?.tracing && workflowProcess.tracing[1]) {
+      const tracing1 = workflowProcess.tracing[1];
+
+      const resultList = tracing1.outputs?.result ?? [];
+
+      newQuotes = resultList.map((res: any) => ({
         name: res.title,
         content: res.content
-      })) ?? [];
+      }));
     }
 
-    // 按 name 去重
+    // 去重
     const uniqueQuotes = Array.from(
       new Map(newQuotes.map(q => [q.name, q])).values()
     );
 
     setQuotes(uniqueQuotes);
   }, [retriever_resources, workflowProcess]);
+
 
   // const quotes = [...new Set(workflowProcess?.tracing?.[1]?.outputs?.result.map((item: any) => item.title) ?? [])];
 
