@@ -15,6 +15,7 @@ import ImageGallery from '../../base/image-gallery'
 import LoadingAnim from '../loading-anim'
 import s from '../style.module.css'
 import Thought from '../thought'
+import TJHSLogo from '../../../images/tjhs.png'
 
 function OperationBtn({ innerContent, onClick, className }: { innerContent: React.ReactNode, onClick?: () => void, className?: string }) {
   return (
@@ -179,14 +180,15 @@ const Answer: FC<IAnswerProps> = ({
   return (
     <div key={id}>
       <div className="flex items-start">
-        <div className={`${s.answerIcon} w-10 h-10 shrink-0`}>
+        {/* <div className={`${s.answerIcon} w-10 h-10 shrink-0`}>
           {isResponding
             && (
               <div className={s.typeingIcon}>
                 <LoadingAnim type="avatar" />
               </div>
             )}
-        </div>
+        </div> */}
+        <img src={TJHSLogo.src} alt="avatar" className="w-10 h-10 shrink-0" />
         <div className={`${s.answerWrap} max-w-[calc(100%-3rem)]`}>
           <div className={`${s.answer} relative text-sm text-gray-900`}>
             <div className={`ml-2 py-3 px-4 bg-gray-100 rounded-tr-2xl rounded-b-2xl ${workflowProcess && 'min-w-[480px]'}`}>

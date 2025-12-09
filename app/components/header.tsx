@@ -5,6 +5,7 @@ import {
   PencilSquareIcon,
 } from '@heroicons/react/24/solid'
 import AppIcon from '@/app/components/base/app-icon'
+import TJHSLogo from '../images/tjhs.png'
 export interface IHeaderProps {
   title: string
   isMobile?: boolean
@@ -17,6 +18,7 @@ const Header: FC<IHeaderProps> = ({
   onShowSideBar,
   onCreateNewChat,
 }) => {
+  const myTitle = '天津海事管理Robot'
   return (
     <div className="shrink-0 flex items-center justify-between h-12 px-3 bg-gray-100">
       {isMobile
@@ -30,8 +32,9 @@ const Header: FC<IHeaderProps> = ({
         )
         : <div></div>}
       <div className='flex items-center space-x-2'>
-        <AppIcon size="small" />
-        <div className=" text-sm text-gray-800 font-bold">{title}</div>
+        {/* <AppIcon size="small" /> */}
+        <img src={TJHSLogo.src} alt="logo" className='h-6 w-6 rounded-sm' />
+        <div className=" text-sm text-gray-800 font-bold">{myTitle}</div>
       </div>
       {isMobile
         ? (
