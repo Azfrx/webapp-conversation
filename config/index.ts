@@ -1,6 +1,6 @@
 import type { AppInfo } from '@/types/app'
 export const APP_ID = '0ad7d550-9b1b-495a-bdab-8da270660508'
-export const API_KEY = 'app-Z4IPd6H51VG7Xwh7tglXibzq'
+export const API_KEY = 'app-Bnw0Z0aBF0v4xSqkCkqwLbo5'
 export const API_URL = 'https://api.dify.ai/v1'
 // export const APP_ID = `${process.env.NEXT_PUBLIC_APP_ID}`
 // export const API_KEY = `${process.env.NEXT_PUBLIC_APP_KEY}`
