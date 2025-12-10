@@ -239,7 +239,7 @@ const Answer: FC<IAnswerProps> = ({
         <img src={TJHSLogo.src} alt="avatar" className="w-10 h-10 shrink-0" />
         <div className={`${s.answerWrap} max-w-[calc(100%-3rem)]`}>
           <div className={`${s.answer} relative text-sm text-gray-900`}>
-            <div className={`ml-2 py-3 px-4 bg-gray-100 rounded-tr-2xl rounded-b-2xl ${workflowProcess && 'min-w-[480px]'}`}>
+            <div className={`ml-2 py-3 px-4 bg-gray-100 rounded-tr-2xl rounded-b-2xl ${workflowProcess && ''}`}>
               {workflowProcess && (
                 <WorkflowProcess data={workflowProcess} hideInfo />
               )}
